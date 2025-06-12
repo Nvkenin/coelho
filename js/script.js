@@ -16,10 +16,10 @@ let targetY = bunnyY;
 // Cenoura
 const carrotSize = 50; // Tamanho da cenoura para cálculo de distância
 let carrotVisible = false;
-const reachDistance = 50; // Distância que o coelho precisa chegar da cenoura para "comer"
+const reachDistance = 100; // Distância que o coelho precisa chegar da cenoura para "comer". **Ajustado para o ASCII art grande!**
 
 // Velocidade do coelho (ajuste para ele ir mais rápido ou mais devagar)
-const bunnySpeed = 0.05; // Pequeno valor para movimento suave
+const bunnySpeed = 0.03; // Velocidade um pouco mais lenta para animação de andar ser visível
 
 // Variáveis de controle de estado
 let isMoving = false;
@@ -28,32 +28,32 @@ let carrotTimeout = null; // Para controlar o tempo da cenoura
 
 // Função para atualizar a posição do coelho
 function updateBunnyPosition() {
-    // Calcula a diferença entre a posição atual do coelho e o alvo
     const dx = targetX - bunnyX;
     const dy = targetY - bunnyY;
 
-    // Calcula a distância total
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Se a distância for muito pequena, para de mover e volta para ocioso
-    if (distance < 5) { // Quase chegou ao alvo
-        isMoving = false;
-        bunny.classList.add('idle'); // Ativa animação de ocioso
-        return; // Sai da função
+    if (distance < 10) { // Quase chegou ao alvo (um pouco maior para ASCII art)
+        if (isMoving) { // Só muda para idle se estava se movendo
+            isMoving = false;
+            bunny.classList.remove('moving');
+            bunny.classList.add('idle'); // Ativa animação de ocioso
+        }
+        return;
     }
 
-    isMoving = true;
-    bunny.classList.remove('idle'); // Desativa animação de ocioso
+    if (!isMoving) { // Só muda para moving se estava parado
+        isMoving = true;
+        bunny.classList.remove('idle');
+        bunny.classList.add('moving'); // Ativa animação de andar
+    }
 
-    // Move o coelho suavemente em direção ao alvo
     bunnyX += dx * bunnySpeed;
     bunnyY += dy * bunnySpeed;
 
-    // Atualiza a posição no CSS
     bunny.style.left = `${bunnyX}px`;
     bunny.style.top = `${bunnyY}px`;
 
-    // Chamada recursiva para animar o movimento
     requestAnimationFrame(updateBunnyPosition);
 }
 
@@ -71,7 +71,7 @@ gameArea.addEventListener('mousemove', (e) => {
         carrot.style.top = `${e.clientY}px`;
         carrot.classList.remove('hidden', 'carrot-hidden'); // Mostra a cenoura
         carrotVisible = true;
-        // Define o target para o coelho como a posição da cenoura
+        
         targetX = e.clientX;
         targetY = e.clientY;
         // Inicia o movimento do coelho em direção à cenoura
@@ -80,9 +80,8 @@ gameArea.addEventListener('mousemove', (e) => {
 });
 
 
-// Loop principal para checar a interação (pode ser executado com requestAnimationFrame para mais performance)
+// Loop principal para checar a interação
 function gameLoop() {
-    // Só verifica se a cenoura está visível
     if (carrotVisible) {
         const bunnyRect = bunny.getBoundingClientRect();
         const carrotRect = carrot.getBoundingClientRect();
@@ -100,21 +99,21 @@ function gameLoop() {
 
         // Se o coelho está perto o suficiente da cenoura
         if (distance < reachDistance) {
-            if (carrotVisible) { // Garante que não coma a cenoura duas vezes seguidas
+            if (carrotVisible) {
                 carrot.classList.add('carrot-hidden'); // Anima para esconder
-                carrotVisible = false; // A cenoura não está mais visível
+                carrotVisible = false;
 
-                spawnHearts(carrotCenterX, carrotCenterY); // Solta corações
+                // Solta corações do centro da cenoura
+                spawnHearts(carrotCenterX, carrotCenterY);
 
-                // Define a próxima cenoura para aparecer após um tempo, no próximo movimento do mouse
-                if (carrotTimeout) clearTimeout(carrotTimeout); // Limpa timeout anterior se houver
+                if (carrotTimeout) clearTimeout(carrotTimeout);
                 carrotTimeout = setTimeout(() => {
-                    carrot.classList.add('hidden'); // Esconde completamente após a animação de sumir
+                    carrot.classList.add('hidden'); // Esconde completamente
                 }, 500); // Meio segundo para animação de sumir
             }
         }
     }
-    requestAnimationFrame(gameLoop); // Continua o loop do jogo
+    requestAnimationFrame(gameLoop);
 }
 
 // Inicia o loop do jogo
@@ -126,15 +125,17 @@ function spawnHearts(x, y) {
     for (let i = 0; i < 5; i++) {
         const heart = document.createElement('div');
         heart.classList.add('heart');
+        heart.textContent = '<3'; // Usamos o caractere '<3' para o coração ASCII
 
         // Posiciona o coração onde a cenoura foi "comida"
         heart.style.left = `${x}px`;
         heart.style.top = `${y}px`;
 
         // Define variáveis CSS personalizadas para o movimento aleatório dos corações
-        // Ajustei os valores para que voem mais para a direita ou esquerda (devido à rotação)
-        heart.style.setProperty('--rand-x', (Math.random() - 0.5) * 150 + 50); // Mais para a direita
-        heart.style.setProperty('--rand-y', (Math.random() - 0.5) * 100 - 50); // Um pouco para cima/baixo
+        // Eles voam mais para os lados (horizontalmente)
+        // Valores ajustados para voar para a direita ou esquerda de forma mais acentuada
+        heart.style.setProperty('--rand-x', (Math.random() - 0.5) * 400); // Mais para a direita/esquerda
+        heart.style.setProperty('--rand-y', (Math.random() - 0.5) * 100 - 50); // Um pouco para cima/baixo, mas menos que X
 
         heartsContainer.appendChild(heart);
 

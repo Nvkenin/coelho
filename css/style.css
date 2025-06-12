@@ -9,122 +9,78 @@
 
 body {
     overflow: hidden;
-    background-color: #f0f8ff; /* Um azul bem clarinho para o fundo */
-    font-family: Arial, sans-serif;
+    background-color: #1a1a1a; /* Fundo bem escuro, estilo terminal */
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada */
     min-height: 100vh;
-    cursor: default; /* Mostra o cursor padrão do mouse */
+    cursor: default;
+    color: #00ff00; /* Texto verde neon, clássico de terminal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Área do jogo */
+/* Área do jogo - com borda de terminal */
 #game-area {
     position: relative;
     width: 100vw;
     height: 100vh;
-    /* O cursor agora é padrão, então não precisamos esconder */
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 15px #00ff00; /* Brilho neon */
+    overflow: hidden; /* Garante que nada saia da área */
 }
 
-/* Estilo para o coelho - CONTAINER PRINCIPAL */
+/* Estilo para o coelho (o <pre> ) */
 #bunny {
     position: absolute;
-    width: 80px; /* Largura base do coelho */
-    height: 80px; /* Altura base do coelho */
-    left: 50%; /* Posição inicial centralizada */
+    width: auto; /* Deixa a largura e altura serem definidas pelo conteúdo */
+    height: auto;
+    left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%); /* Centraliza o coelho no meio da tela */
+    transform: translate(-50%, -50%); /* Centraliza no ponto de origem */
     z-index: 10;
-    /* Adiciona uma transição para o movimento suave do coelho */
-    transition: left 0.5s ease-out, top 0.5s ease-out; /* Transição mais lenta para o coelho "andar" */
+    white-space: pre; /* Crucial para o ASCII art */
+    line-height: 0.7; /* Ajusta a altura da linha para compactar o ASCII art */
+    font-size: 0.6em; /* **Ajuste aqui para fazer o ASCII art caber na tela** */
+    text-shadow: 0 0 5px #00ff00; /* Brilho neon */
+    transition: left 0.5s ease-out, top 0.5s ease-out; /* Transição para o movimento suave */
 }
 
-/* Corpo do coelho */
-#bunny .body {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background-color: #ffffff; /* Branco */
-    border-radius: 50%; /* Corpo redondo */
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* Sombra suave */
+/* Animação para o coelho andando */
+/* Vamos simular o "andar" alterando levemente a posição vertical do coelho */
+@keyframes bunny-walk {
+    0% { transform: translate(-50%, -50%); }
+    25% { transform: translate(-50%, -52%); } /* Levemente para baixo */
+    50% { transform: translate(-50%, -50%); }
+    75% { transform: translate(-50%, -48%); } /* Levemente para cima */
+    100% { transform: translate(-50%, -50%); }
 }
 
-/* Orelhas do coelho */
-#bunny .ear {
-    position: absolute;
-    width: 15px;
-    height: 40px;
-    background-color: #ffffff; /* Branco */
-    border-radius: 50% / 20%; /* Arredonda mais para cima */
-    z-index: 11; /* Orelhas acima do corpo */
-    transform-origin: bottom center; /* Ponto de rotação na base */
-    transition: transform 0.2s ease-in-out; /* Animação para orelhas balançando */
-}
+#bunny.moving { animation: bunny-walk 0.5s infinite ease-in-out; }
 
-#bunny .left-ear {
-    top: 10px;
-    left: 15px;
-    transform: rotate(-20deg); /* Gira a orelha esquerda */
-}
-
-#bunny .right-ear {
-    top: 10px;
-    right: 15px;
-    transform: rotate(20deg); /* Gira a orelha direita */
-}
-
-/* Rabo do coelho */
-#bunny .tail {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: #ffffff; /* Branco */
-    border-radius: 50%;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9; /* Rabo atrás do corpo */
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1); /* Sombra interna para dar volume */
-}
-
-/* Animação sutil de pulo para o coelho */
+/* Animação para o coelho ocioso (pequeno pulo) */
 @keyframes bunny-idle-hop {
-    0%, 100% { transform: translate(-50%, -50%) rotateY(0deg); }
-    50% { transform: translate(-50%, -55%) rotateY(0deg); }
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-50%, -51%); } /* Sobe só um pouquinho */
 }
 
-#bunny.idle .body { animation: bunny-idle-hop 2s infinite ease-in-out; }
+#bunny.idle { animation: bunny-idle-hop 2s infinite ease-in-out; }
 
 
-/* Animação para quando o coelho se move */
-/* @keyframes bunny-walk { ... } - Pode ser adicionado no JS se a animação for mais complexa,
-   ou podemos usar classes para mudar o transform */
-
-/* Estilo para a cenoura */
+/* Estilo para a cenoura (o <pre> ) */
 #carrot {
     position: absolute;
-    width: 30px; /* Largura da cenoura */
-    height: 50px; /* Altura da cenoura */
-    background-color: #ffa500; /* Laranja da cenoura */
-    border-radius: 50% 50% 20% 20% / 60% 60% 40% 40%; /* Forma da cenoura */
+    width: auto;
+    height: auto;
+    background-color: transparent;
     transform: translate(-50%, -50%); /* Centraliza no ponto */
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     z-index: 5;
     opacity: 1;
-}
-
-/* Detalhes da folha da cenoura */
-#carrot::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 15px;
-    height: 25px;
-    background-color: #32cd32; /* Verde da folha */
-    border-radius: 0 50% 0 50%; /* Forma da folha */
-    box-shadow: -5px 0 0 0 #32cd32; /* Para simular duas folhas */
+    white-space: pre;
+    line-height: 0.7; /* Mesma altura de linha que o coelho */
+    font-size: 0.6em; /* **Ajuste aqui para a cenoura caber** */
+    color: #ffa500; /* Laranja da cenoura */
+    text-shadow: 0 0 5px #ffa500; /* Brilho laranja */
 }
 
 /* Classe para esconder a cenoura */
@@ -133,7 +89,7 @@ body {
     transform: scale(0.1) !important; /* Diminui ela enquanto some */
 }
 
-/* Classe para esconder elementos completamente */
+/* Classe para esconder elementos completamente (display: none) */
 .hidden {
     display: none;
     opacity: 0;
@@ -150,49 +106,29 @@ body {
     z-index: 15;
 }
 
-/* Estilo base para cada coração */
+/* Estilo base para cada coração (será um caractere ASCII) */
 .heart {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: #ff69b4; /* Rosa choque para o coração */
-    /* Ajuste aqui para girar 90 graus para a esquerda */
-    transform: rotate(-90deg); /* Começa girado para a esquerda */
+    background-color: transparent;
+    color: #ff0000; /* Vermelho para o coração */
+    font-size: 2em; /* Corações maiores para destaque */
+    line-height: 1;
     opacity: 0;
+    /* Mantém a rotação de 0 para que seja horizontal */
+    transform: rotate(0deg);
     animation: fly-heart 1.5s forwards ease-out;
+    text-shadow: 0 0 5px #ff0000; /* Brilho vermelho */
 }
 
-/* Pseudo-elementos para dar a forma de coração */
-.heart::before,
-.heart::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: #ff69b4;
-    border-radius: 50%;
-}
-
-.heart::before {
-    top: -10px;
-    left: 0;
-}
-
-.heart::after {
-    top: 0;
-    left: 10px;
-}
-
-/* Animação para os corações voarem e sumirem */
+/* Animação para os corações voarem e sumirem (agora voam na horizontal) */
 @keyframes fly-heart {
     0% {
-        opacity: 1; /* Começa visível */
-        /* Mantém a rotação de -90deg e adiciona o translate e scale */
-        transform: translate(0, 0) rotate(-90deg) scale(1);
+        opacity: 1;
+        transform: translate(0, 0); /* Posição inicial sem rotação extra */
     }
     100% {
-        opacity: 0; /* Termina invisível */
-        /* A rotação -90deg permanece, o movimento é relativo a ela */
-        transform: translate(calc(var(--rand-x) * 1px), calc(var(--rand-y) * 1px)) rotate(-90deg) scale(0.5);
+        opacity: 0;
+        /* --rand-x fará ele voar para a direita/esquerda, --rand-y para cima/baixo */
+        transform: translate(calc(var(--rand-x) * 1px), calc(var(--rand-y) * 1px));
     }
 }

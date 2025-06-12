@@ -1,134 +1,70 @@
-/* style.css */
-
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Remove margens e ocupa a tela inteira */
 body {
-    overflow: hidden;
-    background-color: #1a1a1a; /* Fundo bem escuro, estilo terminal */
-    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada */
-    min-height: 100vh;
-    cursor: default;
-    color: #00ff00; /* Texto verde neon, clássico de terminal */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f0f8ff; /* Azul claro suave */
+  position: relative;
+  cursor: none; /* Opcional: esconde o cursor para efeito mais imersivo */
 }
 
-/* Área do jogo - com borda de terminal */
-#game-area {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    border: 2px solid #00ff00;
-    box-shadow: 0 0 15px #00ff00; /* Brilho neon */
-    overflow: hidden; /* Garante que nada saia da área */
+/* Container do coelho */
+#rabbit-container {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  pointer-events: none; /* Evita interferência com clique do mouse */
+  transition: transform 0.2s ease;
 }
 
-/* Estilo para o coelho (o <pre> ) */
-#bunny {
-    position: absolute;
-    width: auto; /* Deixa a largura e altura serem definidas pelo conteúdo */
-    height: auto;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%); /* Centraliza no ponto de origem */
-    z-index: 10;
-    white-space: pre; /* Crucial para o ASCII art */
-    line-height: 0.7; /* Ajusta a altura da linha para compactar o ASCII art */
-    font-size: 0.6em; /* **Ajuste aqui para fazer o ASCII art caber na tela** */
-    text-shadow: 0 0 5px #00ff00; /* Brilho neon */
-    transition: left 0.5s ease-out, top 0.5s ease-out; /* Transição para o movimento suave */
+/* Coelho animado */
+#rabbit {
+  width: 100%;
+  height: auto;
 }
 
-/* Animação para o coelho andando */
-/* Vamos simular o "andar" alterando levemente a posição vertical do coelho */
-@keyframes bunny-walk {
-    0% { transform: translate(-50%, -50%); }
-    25% { transform: translate(-50%, -52%); } /* Levemente para baixo */
-    50% { transform: translate(-50%, -50%); }
-    75% { transform: translate(-50%, -48%); } /* Levemente para cima */
-    100% { transform: translate(-50%, -50%); }
-}
-
-#bunny.moving { animation: bunny-walk 0.5s infinite ease-in-out; }
-
-/* Animação para o coelho ocioso (pequeno pulo) */
-@keyframes bunny-idle-hop {
-    0%, 100% { transform: translate(-50%, -50%); }
-    50% { transform: translate(-50%, -51%); } /* Sobe só um pouquinho */
-}
-
-#bunny.idle { animation: bunny-idle-hop 2s infinite ease-in-out; }
-
-
-/* Estilo para a cenoura (o <pre> ) */
-#carrot {
-    position: absolute;
-    width: auto;
-    height: auto;
-    background-color: transparent;
-    transform: translate(-50%, -50%); /* Centraliza no ponto */
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    z-index: 5;
-    opacity: 1;
-    white-space: pre;
-    line-height: 0.7; /* Mesma altura de linha que o coelho */
-    font-size: 0.6em; /* **Ajuste aqui para a cenoura caber** */
-    color: #ffa500; /* Laranja da cenoura */
-    text-shadow: 0 0 5px #ffa500; /* Brilho laranja */
-}
-
-/* Classe para esconder a cenoura */
-.carrot-hidden {
-    opacity: 0 !important;
-    transform: scale(0.1) !important; /* Diminui ela enquanto some */
-}
-
-/* Classe para esconder elementos completamente (display: none) */
-.hidden {
-    display: none;
-    opacity: 0;
-}
-
-/* Container para os corações */
-#hearts-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 15;
-}
-
-/* Estilo base para cada coração (será um caractere ASCII) */
+/* Estilo dos corações */
 .heart {
-    position: absolute;
-    background-color: transparent;
-    color: #ff0000; /* Vermelho para o coração */
-    font-size: 2em; /* Corações maiores para destaque */
-    line-height: 1;
-    opacity: 0;
-    /* Mantém a rotação de 0 para que seja horizontal */
-    transform: rotate(0deg);
-    animation: fly-heart 1.5s forwards ease-out;
-    text-shadow: 0 0 5px #ff0000; /* Brilho vermelho */
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: red;
+  transform: rotate(45deg);
+  animation: floatUp 1s ease-out forwards;
+  z-index: 1;
 }
 
-/* Animação para os corações voarem e sumirem (agora voam na horizontal) */
-@keyframes fly-heart {
-    0% {
-        opacity: 1;
-        transform: translate(0, 0); /* Posição inicial sem rotação extra */
-    }
-    100% {
-        opacity: 0;
-        /* --rand-x fará ele voar para a direita/esquerda, --rand-y para cima/baixo */
-        transform: translate(calc(var(--rand-x) * 1px), calc(var(--rand-y) * 1px));
-    }
+/* Coração: formato com dois círculos em cima */
+.heart::before,
+.heart::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background-color: red;
+  border-radius: 50%;
+}
+
+.heart::before {
+  top: -8px;
+  left: 0;
+}
+
+.heart::after {
+  left: -8px;
+  top: 0;
+}
+
+/* Animação de flutuar para cima */
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) scale(1.5);
+  }
 }

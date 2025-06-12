@@ -1,31 +1,27 @@
-/* Remove margens e ocupa a tela inteira */
+/* Define estilo básico da página */
 body {
   margin: 0;
   padding: 0;
   overflow: hidden;
   height: 100vh;
   width: 100vw;
-  background-color: #f0f8ff; /* Azul claro suave */
+  background-color: #f0f8ff;
   position: relative;
-  cursor: none; /* Opcional: esconde o cursor para efeito mais imersivo */
+  cursor: none;
 }
 
-/* Container do coelho */
-#rabbit-container {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  pointer-events: none; /* Evita interferência com clique do mouse */
-  transition: transform 0.2s ease;
-}
-
-/* Coelho animado */
+/* Estilo do coelho (representado como um div por enquanto) */
 #rabbit {
-  width: 100%;
-  height: auto;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: pink;
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 0 -10px 0 0 #fff inset;
+  transition: transform 0.1s ease;
 }
 
-/* Estilo dos corações */
+/* Coração animado */
 .heart {
   position: absolute;
   width: 16px;
@@ -33,10 +29,8 @@ body {
   background-color: red;
   transform: rotate(45deg);
   animation: floatUp 1s ease-out forwards;
-  z-index: 1;
 }
 
-/* Coração: formato com dois círculos em cima */
 .heart::before,
 .heart::after {
   content: '';
@@ -53,11 +47,11 @@ body {
 }
 
 .heart::after {
-  left: -8px;
   top: 0;
+  left: -8px;
 }
 
-/* Animação de flutuar para cima */
+/* Animação de flutuar */
 @keyframes floatUp {
   0% {
     opacity: 1;

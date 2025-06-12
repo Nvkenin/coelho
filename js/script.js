@@ -1,60 +1,49 @@
-// Seleciona o container do coelho
-const rabbit = document.getElementById('rabbit-container');
+const rabbit = document.getElementById('rabbit');
 
-// Armazena a posição atual do coelho
+// Posição inicial do coelho e do cursor
 let rabbitX = window.innerWidth / 2;
 let rabbitY = window.innerHeight / 2;
-
-// Velocidade de movimento do coelho
-const speed = 5;
-
-// Captura posição atual do mouse
 let mouseX = rabbitX;
 let mouseY = rabbitY;
+const speed = 3;
 
-// Atualiza posição do mouse sempre que ele se move
+// Detecta movimento do mouse
 document.addEventListener('mousemove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 });
 
-// Função que move o coelho na direção do mouse
-function moveRabbit() {
+function animateRabbit() {
   const dx = mouseX - rabbitX;
   const dy = mouseY - rabbitY;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
+  // Move coelho em direção ao mouse
   if (distance > 1) {
-    // Move proporcionalmente com base na distância
     rabbitX += dx / distance * speed;
     rabbitY += dy / distance * speed;
-
-    rabbit.style.left = `${rabbitX - 32}px`; // Centraliza coelho
-    rabbit.style.top = `${rabbitY - 32}px`;
+    rabbit.style.left = `${rabbitX - 25}px`;
+    rabbit.style.top = `${rabbitY - 25}px`;
   }
 
-  // Se estiver muito próximo do mouse, gera um coração
-  if (distance < 30) {
+  // Se o coelho alcançar o mouse, pula e solta corações
+  if (distance < 40) {
+    rabbit.style.transform = 'translateY(-10px)';
     spawnHeart(rabbitX, rabbitY);
+    setTimeout(() => rabbit.style.transform = 'translateY(0)', 150);
   }
 
-  requestAnimationFrame(moveRabbit);
+  requestAnimationFrame(animateRabbit);
 }
 
-// Cria um coração animado na posição do coelho
+// Cria um coração flutuante
 function spawnHeart(x, y) {
   const heart = document.createElement('div');
   heart.className = 'heart';
   heart.style.left = `${x}px`;
   heart.style.top = `${y}px`;
-
   document.body.appendChild(heart);
-
-  // Remove coração após animação
-  setTimeout(() => {
-    heart.remove();
-  }, 1000);
+  setTimeout(() => heart.remove(), 1000);
 }
 
-// Inicia a animação
-moveRabbit();
+animateRabbit();

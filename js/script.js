@@ -1,40 +1,35 @@
 const rabbit = document.getElementById('rabbit');
+let rx = innerWidth/2, ry = innerHeight/2;
+let mx = rx, my = ry;
+const speed = 4, threshold = 40;
+let canHeart = true;
 
-let rabbitX = window.innerWidth / 2;
-let rabbitY = window.innerHeight / 2;
-let mouseX = rabbitX;
-let mouseY = rabbitY;
-const speed = 3;
-let canSpawnHeart = true;
-
-document.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
 });
 
-function animateRabbit() {
-  const dx = mouseX - rabbitX;
-  const dy = mouseY - rabbitY;
-  const distance = Math.sqrt(dx * dx + dy * dy);
+function loop() {
+  const dx = mx - rx, dy = my - ry;
+  const dist = Math.hypot(dx, dy);
+  if (dist > 1) {
+    rx += (dx / dist) * speed;
+    ry += (dy / dist) * speed;
+    rabbit.style.left = `${rx - 30}px`;
+    rabbit.style.top = `${ry - 30}px`;
 
-  if (distance > 1) {
-    rabbitX += dx / distance * speed;
-    rabbitY += dy / distance * speed;
-    rabbit.style.left = `${rabbitX - 25}px`;
-    rabbit.style.top = `${rabbitY - 25}px`;
+    // Vira
+    const angle = Math.atan2(dy, dx);
+    const deg = angle * 180 / Math.PI;
+    rabbit.style.transform = `rotate(${deg}deg)`;
   }
 
-  if (distance < 40 && canSpawnHeart) {
-    rabbit.style.transform = 'translateY(-10px)';
-    spawnHeart(rabbitX, rabbitY);
-    canSpawnHeart = false;
-    setTimeout(() => {
-      rabbit.style.transform = 'translateY(0)';
-      canSpawnHeart = true;
-    }, 300);
+  if (dist < threshold && canHeart) {
+    spawnHeart(rx, ry);
+    canHeart = false;
+    setTimeout(() => canHeart = true, 500);
   }
 
-  requestAnimationFrame(animateRabbit);
+  requestAnimationFrame(loop);
 }
 
 function spawnHeart(x, y) {
@@ -46,4 +41,4 @@ function spawnHeart(x, y) {
   setTimeout(() => heart.remove(), 1000);
 }
 
-animateRabbit();
+loop();
